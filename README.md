@@ -6,10 +6,10 @@ I could do this with `sys.argv` arguments, you can adjust host/port on the code,
 
 server.py (line 89)
 
-`chat = Chat_Server()
- chat.run('', 9005) # adjust host/port`
+`chat = Chat_Server()`<br>
+`chat.run('', 9005) # adjust host/port`
  
  client.py (line 54)
  
-`client = Client()
-client.connect('', 9005) # adjust host/port`
+`client = Client()`<br>
+`client.connect('', 9005) # adjust host/port`
