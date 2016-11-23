@@ -17,11 +17,10 @@ class Client:
 	def begin_chat(self, client_sock):
 		while True:
 			socket_list = [sys.stdin, client_sock]
-			#print(socket_list)
 			ready_to_read,ready_to_write,in_error = select.select(socket_list , [], [])
 			for sock in ready_to_read:
 				if sock == client_sock:
-					# incoming message from remote server, s
+					# message from server
 					data = sock.recv(4096)
 					if not data:
 						print('\nDisconnected from chat server')
