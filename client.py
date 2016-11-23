@@ -52,22 +52,3 @@ class Client:
 
 client = Client()
 client.connect('', 9005) # adjust host/port
-
-
-	
-
-
-'''
-data = s.recv(1024).decode('utf-8')
-if data:
-	print(data)
-msg = input('show fibonacci of:')
-try:
-    int(msg)
-except ValueError:
-	print('formato errado')
-	continue
-s.send(msg.encode('ascii')) 
-data = s.recv(1024).decode('utf-8')
-print(data)
-'''
