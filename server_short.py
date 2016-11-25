@@ -60,6 +60,8 @@ class Chat_Server:
 			if(sock_write is not client):
 				self.send_msg(msg, sender, sock_write)
 
+	def has_username(self, client):
+		return self.data[self.client_name(client)]['username'] is not None
 
 	def server_handler(self, client):
 		self.data[self.client_name(client)] = {'msgs_sent': [], 'username': None}
@@ -75,7 +77,7 @@ class Chat_Server:
 			if(not req):
 				self.client_close(client)
 				break
-			if(self.data[self.client_name(client)]['username'] is None):
+			if(not self.has_username(client)):
 				self.data[self.client_name(client)]['username'] = req
 				self.send_to_all('{} HAS JOINED THE CHAT...'.format(req), client, 'SERVER')
 				self.actives.add(client) # store all clients that gave an username
