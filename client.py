@@ -5,14 +5,14 @@ class Client:
 		self.username = None
 
 	def connect(self, host, port):
-		s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		try:
-			s.connect((host, port))
-		except Exception as err:
-			print('Unable to connect: {}'.format(err))
-			sys.exit()
-		print('Connecting to {} on port {}\n'.format(host, port))
-		self.begin_chat(s)
+		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+			try:
+				print('Connecting to {} on port {}\n'.format(host, port))
+				s.connect((host, port))
+			except Exception as err:
+				print('Unable to connect: {}'.format(err))
+				sys.exit()
+			self.begin_chat(s)
 
 	def begin_chat(self, client_sock):
 		while True:
