@@ -27,7 +27,7 @@ class Chat_Server:
 		if(client in self.actives):
 			self.actives.remove(client)
 
-	def send_msg(self, msg, sender, to, from_server = False):
+	def send_msg(self, msg, sender, to, from_server=False):
 		to_send = {'from': sender, 'message': msg, 'msg_from_server': from_server}
 		to.send(json.dumps(to_send).encode('utf-8'))
 
