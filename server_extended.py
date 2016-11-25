@@ -32,9 +32,6 @@ class Chat_Server:
 
 	def client_name(self, client):
 		return ':'.join(str(i) for i in client.getpeername())
-	
-	def has_username(self, client):
-		return self.data[self.client_name(client)]['username'] is not None
 
 	def client_close(self, client):
 		self.print_queue.put('\n[-] Client {} ({}) closed the conection'.format(client.getpeername(), self.data[self.client_name(client)]))
@@ -44,8 +41,8 @@ class Chat_Server:
 			self.actives.remove(client)
 		self.print_queue.put("[-] Connections ({}): {}\n[-] Actives ({}): {}\n\n".format(len(self.conns), self.conns, len(self.actives), self.actives))
 
-	def send_msg(self, msg, sender, to):
-		to_send = {'from': sender, 'message': msg}
+	def send_msg(self, msg, sender, to, from_server = False):
+		to_send = {'from': sender, 'message': msg, 'msg_from_server': from_server}
 		to.send(json.dumps(to_send).encode('utf-8'))
 
 	def show_report(self, raw, req, client):
@@ -55,19 +52,22 @@ class Chat_Server:
 		end_output = '{}\n[+] Total data: {}\n\n'.format(report, self.data)
 		self.print_queue.put(end_output)
 
-	def send_to_all(self, msg, client, sender):
-		if(sender != 'SERVER'):
+	def send_to_all(self, msg, client, sender, from_server=False):
+		if(not from_server):
 			self.data[self.client_name(client)]['msgs_sent'].append(msg)
 		ready_to_read,ready_to_write,in_error = select.select(self.actives, self.actives,[],0)
 		for sock_write in ready_to_write:
 			if(sock_write is not client):
-				self.send_msg(msg, sender, sock_write)
+				self.send_msg(msg, sender, sock_write, from_server)
+
+	def has_username(self, client):
+		return self.data[self.client_name(client)]['username'] is not None
 
 	def server_handler(self, client):
 		self.data[self.client_name(client)] = {'msgs_sent': [], 'username': None}
 		msg = 'welcome...{}.\nThere are this users connected: {}\n\n'
 		msg = msg.format(client.getpeername(), [i.getpeername() for i in self.conns])
-		self.send_msg(msg, 'SERVER', client)
+		self.send_msg(msg, 'SERVER', client, from_server = True)
 		while True:
 			try:
 				raw = client.recv(1024)
@@ -79,7 +79,7 @@ class Chat_Server:
 				break
 			if(not self.has_username(client)):
 				self.data[self.client_name(client)]['username'] = req
-				self.send_to_all('{} HAS JOINED THE CHAT...'.format(req), client, 'SERVER')
+				self.send_to_all('{} HAS JOINED THE CHAT...'.format(req), client, 'SERVER', from_server = True)
 				self.actives.add(client) # store all clients that gave an username
 				continue
 			self.send_to_all(req, client, self.data[self.client_name(client)]['username'])
