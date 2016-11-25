@@ -28,7 +28,7 @@ class Client:
 					else:
 						data = json.loads(data.decode('utf-8'))
 						color = '\033[1;32;40m'
-						if(data['from'] == 'SERVER'):
+						if(data['msg_from_server']):
 							color = '\033[1;30;40m'
 						output = '\r{}[{}]: {}\033[0;37;40m \n'.format(color, data['from'], data['message'])
 						sys.stdout.write(output)
