@@ -21,6 +21,9 @@ class Chat_Server:
 	def client_name(self, client):
 		return ':'.join(str(i) for i in client.getpeername())
 
+	def has_username(self, client):
+		return self.data[self.client_name(client)]['username'] is not None
+
 	def client_close(self, client):
 		self.conns.remove(client)
 		del self.data[self.client_name(client)]
@@ -38,9 +41,6 @@ class Chat_Server:
 		for sock_write in ready_to_write:
 			if(sock_write is not client):
 				self.send_msg(msg, sender, sock_write, from_server)
-
-	def has_username(self, client):
-		return self.data[self.client_name(client)]['username'] is not None
 
 	def server_handler(self, client):
 		self.data[self.client_name(client)] = {'msgs_sent': [], 'username': None}
