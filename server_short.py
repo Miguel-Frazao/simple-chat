@@ -1,32 +1,20 @@
-import threading, socket, select, json, queue
+import threading, socket, select, json
 
 class Chat_Server:
 	def __init__(self):
 		self.conns = set() # all connections
 		self.actives = set() # connections who provided an username
 		self.data = {} # all data we want to store
-		self.print_queue = queue.Queue()
-		t = threading.Thread(target=self.print_manager)
-		t.daemon = True
-		t.start()
-		del t
-
-	def print_manager(self):
-		while True:
-			msg = self.print_queue.get()
-			print(msg)
-			self.print_queue.task_done()
 
 	def run(self, addr, port):
 		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
 			sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 			sock.bind((addr, port))
 			sock.listen(5)
-			self.print_queue.put('Server started at {}:{}\n'.format(addr, port))
+			print('Server started at {}:{}\n'.format(addr, port))
 			while True:
 				client, addr = sock.accept()
 				self.conns.add(client)
-				self.print_queue.put("New Connection: {}\nConnections {}: {}\n\n".format(addr, len(self.conns), self.conns))
 				t = threading.Thread(target=self.server_handler, args=(client,), name='t_{}'.format(self.client_name(client)))
 				t.start()
 
@@ -34,23 +22,14 @@ class Chat_Server:
 		return ':'.join(str(i) for i in client.getpeername())
 
 	def client_close(self, client):
-		self.print_queue.put('\n[-] Client {} ({}) closed the conection'.format(client.getpeername(), self.data[self.client_name(client)]))
 		self.conns.remove(client)
 		del self.data[self.client_name(client)]
 		if(client in self.actives):
 			self.actives.remove(client)
-		self.print_queue.put("[-] Connections ({}): {}\n[-] Actives ({}): {}\n\n".format(len(self.conns), self.conns, len(self.actives), self.actives))
 
 	def send_msg(self, msg, sender, to):
 		to_send = {'from': sender, 'message': msg}
 		to.send(json.dumps(to_send).encode('utf-8'))
-
-	def show_report(self, raw, req, client):
-		recipients = ', '.join(self.data[self.client_name(i)]['username'] for i in self.actives if i is not client)
-		report_msg = '[+] Thread: {}\n[+] Message sent from {} to: {}\n[+] Content: {} ({})'
-		report = report_msg.format(threading.currentThread().getName(), self.data[self.client_name(client)]['username'], recipients, raw, req)
-		end_output = '{}\n[+] Total data: {}\n\n'.format(report, self.data)
-		self.print_queue.put(end_output)
 
 	def send_to_all(self, msg, client, sender):
 		if(sender != 'SERVER'):
@@ -83,7 +62,6 @@ class Chat_Server:
 				self.actives.add(client) # store all clients that gave an username
 				continue
 			self.send_to_all(req, client, self.data[self.client_name(client)]['username'])
-			self.show_report(raw, req, client)
 
 
 chat = Chat_Server()
