@@ -2,6 +2,8 @@
 
 This is a simple socket based chat made in python 3.5.2
 
+`server_short.py`: is exactly the same as server_extended but without the server side prints. The prints are just to trace what's happening
+
 I could do this with `sys.argv` arguments, but you can adjust host/port on the code, i thought it would be more simple like this:
 
 server.py (line 89)
@@ -13,5 +15,3 @@ server.py (line 89)
  
 `client = Client()`<br>
 `client.connect('', 9005) # adjust host/port`
-
-Don't worry, if you find this big you can erase the prints on the server side, we don't really need them, and the code will be half size
