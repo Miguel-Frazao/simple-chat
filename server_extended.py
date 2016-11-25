@@ -33,6 +33,9 @@ class Chat_Server:
 	def client_name(self, client):
 		return ':'.join(str(i) for i in client.getpeername())
 
+	def has_username(self, client):
+		return self.data[self.client_name(client)]['username'] is not None
+
 	def client_close(self, client):
 		self.print_queue.put('\n[-] Client {} ({}) closed the conection'.format(client.getpeername(), self.data[self.client_name(client)]))
 		self.conns.remove(client)
@@ -59,9 +62,6 @@ class Chat_Server:
 		for sock_write in ready_to_write:
 			if(sock_write is not client):
 				self.send_msg(msg, sender, sock_write, from_server)
-
-	def has_username(self, client):
-		return self.data[self.client_name(client)]['username'] is not None
 
 	def server_handler(self, client):
 		self.data[self.client_name(client)] = {'msgs_sent': [], 'username': None}
