@@ -59,7 +59,6 @@ class Chat_Server:
 				self.send_to_all('{} HAS JOINED THE CHAT...'.format(req), client, 'SERVER')
 				self.actives.add(client) # store all clients that gave an username
 				continue
-
 			self.send_to_all(req, client, self.data[self.client_name(client)]['username'])
 
 
