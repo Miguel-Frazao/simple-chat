@@ -14,4 +14,4 @@ server.py (line 89)
 `client = Client()`<br>
 `client.connect('', 9005) # adjust host/port`
 
-Don't worry, if you find this big you can delete the prints, we don't really need them, and the code will be half size
+Don't worry, if you find this big you can erase the prints on the server side, we don't really need them, and the code will be half size
