@@ -41,7 +41,7 @@ class Chat_Server:
 			self.actives.remove(client)
 		self.print_queue.put("[-] Connections ({}): {}\n[-] Actives ({}): {}\n\n".format(len(self.conns), self.conns, len(self.actives), self.actives))
 
-	def send_msg(self, msg, sender, to, from_server = False):
+	def send_msg(self, msg, sender, to, from_server=False):
 		to_send = {'from': sender, 'message': msg, 'msg_from_server': from_server}
 		to.send(json.dumps(to_send).encode('utf-8'))
 
