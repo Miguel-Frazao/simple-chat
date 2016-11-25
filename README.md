@@ -1,4 +1,4 @@
-# simple-chat-python3
+# simple-chat done in python 3
 
 This is a simple socket based chat made in python 3.5.2
 
