@@ -6,12 +6,12 @@ This is a simple socket based chat made in python 3.5.2
 
 I could do this with `sys.argv` arguments, but you can adjust host/port on the code, i thought it would be more simple like this:
 
-server.py (line 89)
+server 
 
 `chat = Chat_Server()`<br>
 `chat.run('', 9005) # adjust host/port`
  
- client.py (line 54)
+ client
  
 `client = Client()`<br>
 `client.connect('', 9005) # adjust host/port`
