@@ -1,4 +1,4 @@
-import threading, socket, select, json, queue
+import threading, socket, json, queue
 
 class Chat_Server:
 	def __init__(self):
@@ -58,8 +58,7 @@ class Chat_Server:
 	def send_to_all(self, msg, client, sender, from_server=False):
 		if(not from_server):
 			self.data[self.client_name(client)]['msgs_sent'].append(msg)
-		ready_to_read,ready_to_write,in_error = select.select(self.actives, self.actives,[],0)
-		for sock_write in ready_to_write:
+		for sock_write in self.actives:
 			if(sock_write is not client):
 				self.send_msg(msg, sender, sock_write, from_server)
 
