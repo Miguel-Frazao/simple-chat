@@ -46,7 +46,7 @@ class Chat_Server:
 
 	def send_msg(self, msg, sender, to, from_server=False):
 		to_send = {'from': sender, 'message': msg, 'msg_from_server': from_server}
-		to.send(json.dumps(to_send).encode('utf-8'))
+		to.send(json.dumps(to_send).encode())
 
 	def show_report(self, raw, req, client):
 		recipients = ', '.join(self.data[self.client_name(i)]['username'] for i in self.actives if i is not client)
@@ -70,7 +70,7 @@ class Chat_Server:
 		while True:
 			try:
 				raw = client.recv(1024)
-				req = raw.decode('utf-8').strip()
+				req = raw.decode().strip()
 			except Exception as err:
 				break
 			if(not req):
