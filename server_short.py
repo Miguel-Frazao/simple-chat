@@ -32,7 +32,7 @@ class Chat_Server:
 
 	def send_msg(self, msg, sender, to, from_server=False):
 		to_send = {'from': sender, 'message': msg, 'msg_from_server': from_server}
-		to.send(json.dumps(to_send).encode('utf-8'))
+		to.send(json.dumps(to_send).encode())
 
 	def send_to_all(self, msg, client, sender, from_server=False):
 		if(not from_server):
